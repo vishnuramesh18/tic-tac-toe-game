@@ -1,0 +1,159 @@
+# Tic-Tac-Toe Game Project Program using Python. 
+# Importing all the Necessary In-Built Libraries. 
+import numpy as np
+import random 
+from time import sleep
+# Creating an Empty Board. 
+def create_board():   
+    return(np.array([[0, 0, 0], 
+                     [0, 0, 0], 
+                     [0, 0, 0]])) 
+# Check for Empty Places on the Board. 
+def possibilities(board):     
+    l = [ ]       
+    for i in range(len(board)):        
+        for j in range(len(board)):               
+            if board[i][j] == 0: 
+                l.append((i, j))    
+    print("\nAvailable Options are :- ",l)
+    sleep(1)
+    return(l) 
+# Select a Random Place for the Player. 
+def random_place(board, player): 
+    print("\nPlayer " + str(player) + "'s Chance (Computer) ->")
+    selection = possibilities(board) 
+    index = random.choice(selection)
+    print("\nIndex Choosen : ",index)
+    board[index] = player 
+    return(board)
+    # Placing the Mark on Board for the Player.
+def place(board, player):     
+    print("\nPlayer " + str(player) + "'s Chance (Human) ->")
+    selection = possibilities(board)
+    print("\nEnter the Index : ",end="")
+    index = tuple(map(int,input( ).split( )))    
+    while index not in selection:
+        print("\nEnter a Valid Index : ",end="")
+        index = tuple(map(int,input( ).split( )))
+    print("\nIndex Choosen : ",index)
+    board[index] = player    
+    return(board) 
+# Checks whether the Player has three  
+# of their Marks in a Row. 
+def row_win(board, player):     
+    for x in range(len(board)):
+        win = True          
+        for y in range(len(board)):             
+            if board[x, y] != player: 
+                win = False
+                continue                  
+        if win == True: 
+            return(win)     
+    return(win) 
+# Checks whether the Player has three 
+# of their Marks in a Column.
+def column_win(board, player):     
+    for x in range(len(board)): 
+        win = True          
+        for y in range(len(board)):
+                    if board[y][x] != player:
+                win = False
+                continue                  
+        if win == True: 
+            return(win)     
+    return(win) 
+# Checks whether the Player has three 
+# of their Marks in the Main Diagonal.
+def main_diagonal_win(board, player):     
+    win = True    
+    for x in range(len(board)):
+        if board[x, x] != player: 
+            win = False    
+    return(win)
+# Checks whether the Player has three 
+# of their Marks in the Anti-Diagonal.
+def anti_diagonal_win(board, player):    
+    win = True    
+    if win: 
+        for x in range(len(board)): 
+            y = len(board) - 1 - x 
+            if board[x, y] != player: 
+                win = False    
+    return win 
+# Evaluates whether there is a Win or a Draw in the Game.  
+def evaluate(board):     
+    winner = 0    
+    for player in [1, 2]:
+if (row_win(board, player) or
+            column_win(board,player) or 
+            main_diagonal_win(board,player) or
+            anti_diagonal_win(board,player)): 
+            winner = player 
+    if np.all(board != 0) and winner == 0: 
+        winner = -1    
+    return winner 
+# Main function to Start the Game. 
+def play_game(choice):     
+    board, winner, counter = create_board(), 0, 1
+    print("\nInitial Board ->\n")
+    print(board) 
+    while winner == 0:         
+        for player in [1, 2]:            
+            if choice == 1:
+                board = place(board, player)
+            elif choice == 2:
+                if player == 1:
+                    board = place(board, player)
+                else:
+                    board = random_place(board, player)
+            else:
+                board = random_place(board, player)            
+            sleep(1)            
+            if counter == 1:
+                print("\nBoard after " + str(counter) + " Move ->\n") 
+            else:
+                print("\nBoard after " + str(counter) + " Moves ->\n")            
+            print(board) 
+sleep(1)   
+            counter += 1
+            winner = evaluate(board)             
+            if winner != 0: 
+                break    
+    return(winner)
+# Driver Code.
+print("TIC-TAC-TOE GAME \n")
+print("Do you want to play the game ? [Yes(Y,y)/(No(N,n)]")
+ans = input( ) 
+if ans == 'Y' or ans == 'y':    
+    while True:    
+        print("\nThe Choices are :- \n")
+        print("1. Human v/s Human")
+        print("2. Human v/s Computer")
+        print("3. Computer v/s Computer")
+        print("\nEnter your Choice : ",end="")
+        # Take the Choice as Input from User. 
+        choice = int(input( )) 
+        # Looping until User enters Invalid Choice Input.
+        while choice > 3 or choice < 1: 
+            print("\nEnter a Valid Choice : ",end="")
+            choice = int(input( ))
+        w = play_game(choice)        
+        if w in [1,2]:            
+            if choice == 1:
+                print("\nWinner is Player " + str(w) + " (Human).")
+            elif choice == 2:
+                if w == 1:
+                    print("\nWinner is Player " + str(w) + " (Human).")
+else:
+                    print("\nWinner is Player " + str(w) + " (Computer).")
+            else:
+                print("\nWinner is Player " + str(w) + " (Computer).")
+        else :
+            print("\nGame Drawn")
+        print("\nDo you want to play the game again ? [Yes(Y,y)/No(N,n)]") 
+        ans = input( ) 
+        # If User Input n or N then the Game is to be terminated. 
+        if ans == 'N' or ans == 'n':
+            break
+    # At last, we print 'Thanks for playing the Game !'.
+    print("\nThanks for playing the Game !")
